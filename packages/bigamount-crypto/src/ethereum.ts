@@ -1,4 +1,4 @@
-import {BigAmount, Unit, Units} from "@emeraldpay/bigamount";
+import {BigAmount, Unit, Units, NumberAmount} from "@emeraldpay/bigamount";
 import BigNumber from "bignumber.js";
 
 export const WEIS = new Units(
@@ -26,7 +26,7 @@ export const WEIS_ETC = new Units(
 );
 
 export class WeiAny extends BigAmount {
-    constructor(value: BigNumber | string | number | BigAmount, units: Units) {
+    constructor(value: NumberAmount | BigAmount, units: Units) {
         super(value, units);
     }
 
@@ -34,18 +34,24 @@ export class WeiAny extends BigAmount {
         return `${this.isNegative() ? '-' : ''}0x${this.number.abs().toString(16)}`;
     }
 
-    protected copyWith(value: BigNumber): this {
-        // @ts-ignore
-        return new WeiAny(value, this.units);
-    }
 }
 
 export class Wei extends WeiAny {
 
     public static ZERO: Wei = new Wei(0);
 
-    constructor(value: BigNumber | string | number | BigAmount) {
+    constructor(value: NumberAmount | BigAmount, unit?: string | Unit) {
+        if (typeof unit !== "undefined") {
+            if (BigAmount.is(value)) {
+                throw new Error("Already BigAmount");
+            }
+            return BigAmount.createFor(value, WEIS, (value) => new Wei(value), unit)
+        }
         super(value, WEIS);
+    }
+
+    static fromEther(value: NumberAmount): Wei {
+        return new Wei(value, "ETHER");
     }
 
     static is(value: any): value is Wei {
@@ -55,12 +61,23 @@ export class Wei extends WeiAny {
     static decode(value: string): Wei {
         return new Wei(value);
     }
+
+    protected copyWith(value: BigNumber): this {
+        // @ts-ignore
+        return new Wei(value);
+    }
 }
 
 export class WeiEtc extends WeiAny {
     public static ZERO: WeiEtc = new WeiEtc(0);
 
-    constructor(value: BigNumber | string | number | BigAmount) {
+    constructor(value: NumberAmount | BigAmount, unit?: string | Unit) {
+        if (typeof unit !== "undefined") {
+            if (BigAmount.is(value)) {
+                throw new Error("Already BigAmount");
+            }
+            return BigAmount.createFor(value, WEIS_ETC, (value) => new WeiEtc(value), unit)
+        }
         super(value, WEIS_ETC);
     }
 
@@ -71,4 +88,14 @@ export class WeiEtc extends WeiAny {
     static decode(value: string): WeiEtc {
         return new WeiEtc(value);
     }
+
+    static fromEther(value: NumberAmount): WeiEtc {
+        return new WeiEtc(value, "ETHER");
+    }
+
+    protected copyWith(value: BigNumber): this {
+        // @ts-ignore
+        return new Wei(value);
+    }
+
 }

@@ -1,5 +1,5 @@
 export {
-    BigAmount
+    BigAmount, NumberAmount, CreateAmount
 } from "./amount";
 
 export {

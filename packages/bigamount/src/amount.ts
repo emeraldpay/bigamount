@@ -1,13 +1,16 @@
 import {BigNumber} from 'bignumber.js';
 import {Unit, Units} from "./units";
 
+export type NumberAmount = BigNumber | string | number;
+export type CreateAmount<T extends BigAmount> = (value: NumberAmount) => T;
+
 export class BigAmount {
     private readonly kind = "emerald.BigAmount";
 
     private readonly value: BigNumber;
     readonly units: Units
 
-    constructor(value: BigNumber | string | number | BigAmount, units: Units) {
+    constructor(value: NumberAmount | BigAmount, units: Units) {
         if (typeof value == "undefined") {
             throw Error("Cannot be undefined");
         }
@@ -25,6 +28,24 @@ export class BigAmount {
             throw new Error("Not units");
         }
         this.units = units;
+    }
+
+    static createFor<T extends BigAmount>(value: NumberAmount, units: Units, factory: CreateAmount<T>, unit?: string | Unit): T {
+        if (typeof unit === "string") {
+            let unitClean = unit.toLowerCase();
+            let actualUnit = units.units.find((it) => it.code.toLowerCase() == unitClean || it.name.toLowerCase() == unitClean);
+            if (typeof actualUnit === "undefined") {
+                throw new Error("Invalid unit: " + unit);
+            }
+            return BigAmount.createFor(value, units, factory, actualUnit);
+        } else if (typeof Unit.is(unit)) {
+            if (!units.contains(unit)) {
+                throw new Error("Invalid unit: " + unit.toString());
+            }
+            return factory(new BigNumber(value).multipliedBy(new BigNumber(10).pow(unit.decimals)));
+        } else {
+            return factory(value)
+        }
     }
 
     static is(value: any): value is BigAmount {
