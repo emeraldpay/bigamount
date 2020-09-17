@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/bigamount",
+    "packages/bigamount-crypto"
+  ],
+  "scripts": {
+    "build": "yarn workspaces run build"
+  }
+}

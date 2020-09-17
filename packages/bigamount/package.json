@@ -1,0 +1,34 @@
+{
+  "name": "@emeraldpay/bigamount",
+  "version": "0.1.0-alpha",
+  "description": "Big Amounts with units and conversions",
+  "author": "Igor Artamonov",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emeraldpay/bigamount.git"
+  },
+  "types": "lib/index.d.ts",
+  "main": "lib/index.js",
+  "files": [
+    "lib/*.ts",
+    "lib/*.js"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "jest": "jest",
+    "test": "npm run jest",
+    "clean": "rimraf lib",
+    "prepublishOnly": "npm run clean && npm run build && npm run test"
+  },
+  "dependencies": {
+    "bignumber.js": "^8.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.13",
+    "jest": "^26.4.2",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.3.0",
+    "typescript": "^4.0.2"
+  }
+}
