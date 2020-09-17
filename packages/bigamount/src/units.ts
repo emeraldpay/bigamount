@@ -18,7 +18,7 @@ export class Unit {
         this.name = name;
         this.code = code || name;
 
-        this.multiplier = new BigNumber(10).exponentiatedBy(decimals)
+        this.multiplier = new BigNumber(10).pow(decimals)
     }
 
     static is(value: any): value is Unit {
@@ -82,15 +82,25 @@ export class Units {
         return true;
     }
 
-    getUnit(value: BigAmount, limit?: Unit): Unit {
-        let number = value.number;
+    getUnit(value: BigAmount | BigNumber | number, limit?: Unit): Unit {
+        let number;
+        if (typeof value == "number") {
+            number = new BigNumber(value);
+        } else if (BigAmount.is(value)) {
+            number = value.number;
+        } else if (BigNumber.isBigNumber(value)) {
+            number = value
+        } else {
+            throw new Error("Invalid value type" + value)
+        }
+        number = number.absoluteValue();
         limit = limit || this.base;
         for (let i = this.units.length - 1; i > 0; i--) {
             let unit = this.units[i];
             if (limit.decimals == unit.decimals) {
                 return unit;
             }
-            if (number.isGreaterThanOrEqualTo(unit.decimals)) {
+            if (number.isGreaterThanOrEqualTo(unit.multiplier)) {
                 return unit;
             }
         }

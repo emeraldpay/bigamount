@@ -139,14 +139,14 @@ describe("BigAmount", () => {
         //since it's shortcut, just basic check
         it("works", () => {
             let value = new BigAmount("123456", units);
-            expect(value.getOptimalUnit().code).toBe("MS");
+            expect(value.getOptimalUnit().code).toBe("kS");
         })
     });
 
     describe("to string", () => {
         it("standard", () => {
             let value = new BigAmount("123456", units);
-            expect(value.toString()).toBe("0.123456 MS");
+            expect(value.toString()).toBe("123.456 kS");
         });
         it("zero", () => {
             let value = new BigAmount(0, units);
