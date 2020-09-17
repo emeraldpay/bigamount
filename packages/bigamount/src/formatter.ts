@@ -26,7 +26,7 @@ export class BigAmountFormatter {
             source: value,
             buffer: [],
             number: value.number,
-            unit: value.units.top
+            unit: value.units.base
         }
         this.formatters.forEach((fmt) => fmt.apply(ctx));
         return ctx.buffer.join("")
@@ -170,6 +170,7 @@ export class BaseUnit implements FormatterPart {
 export class TopUnit implements FormatterPart {
     apply(ctx: FormattingContext) {
         ctx.unit = ctx.source.units.top;
+        ctx.number = ctx.source.getNumberByUnit(ctx.unit);
     }
 }
 
@@ -208,7 +209,7 @@ const FullWithCode = new FormatterBuilder()
 
 const OptimalWithCode = new FormatterBuilder()
     .useOptimalUnit()
-    .number()
+    .number(2)
     .append(" ")
     .unitCode()
     .build();
