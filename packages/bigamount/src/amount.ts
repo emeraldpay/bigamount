@@ -123,7 +123,7 @@ export class BigAmount {
     }
 
     multiply(n: number | BigNumber): this {
-        if (typeof n !== 'number') {
+        if (typeof n !== 'number' && !BigNumber.isBigNumber(n)) {
             throw new Error('Not a number')
         }
         return this.copyWith(
@@ -132,7 +132,7 @@ export class BigAmount {
     }
 
     divide(n: number | BigNumber): this {
-        if (typeof n !== 'number') {
+        if (typeof n !== 'number' && !BigNumber.isBigNumber(n)) {
             throw new Error('Not a number')
         }
         return this.copyWith(

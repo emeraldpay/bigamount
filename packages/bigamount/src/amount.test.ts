@@ -311,6 +311,12 @@ describe("BigAmount", () => {
             expect(value.number.toFixed()).toBe("14043428571392737161643");
         });
 
+        it("with bignum", () => {
+            let value = new BigAmount("9362285714285714298238", units);
+            value = value.multiply(new BigNumber(123));
+            expect(value.number.toFixed()).toBe("1151561142857142858683274");
+        });
+
         it("decimal multiply", () => {
             let value = new BigAmount("93622857", units);
             value = value.multiply(3.123);
