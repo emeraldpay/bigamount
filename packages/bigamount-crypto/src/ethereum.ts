@@ -34,6 +34,9 @@ export class WeiAny extends BigAmount {
         return `${this.isNegative() ? '-' : ''}0x${this.number.abs().toString(16)}`;
     }
 
+    toEther(): number {
+        return this.number.dividedBy(this.units.top.multiplier).toNumber()
+    }
 }
 
 export class Wei extends WeiAny {

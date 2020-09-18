@@ -32,4 +32,7 @@ export class Satoshi extends BigAmount {
         return new Satoshi(value, "BITCOIN")
     }
 
+    toBitcoin(): number {
+        return this.number.dividedBy(this.units.top.multiplier).toNumber()
+    }
 }
