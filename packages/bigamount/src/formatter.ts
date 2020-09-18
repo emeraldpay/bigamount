@@ -36,9 +36,9 @@ export class BigAmountFormatter {
 export class FormatterBuilder {
     private formatter: FormatterPart[] = []
 
-    number(decimals?: number, rounding?: BigNumber.RoundingMode, format?: BigNumber.Format): FormatterBuilder {
+    number(decimals?: number, removeTailing: boolean = false, rounding?: BigNumber.RoundingMode, format?: BigNumber.Format): FormatterBuilder {
         this.formatter.push(
-            new NumberFormatter(decimals, rounding, format)
+            new NumberFormatter(decimals, removeTailing, rounding, format)
         );
         return this;
     }
@@ -101,19 +101,42 @@ export class NumberFormatter implements FormatterPart {
     readonly decimals: number = 0;
     readonly rounding: RoundingMode | undefined;
     readonly format: BigNumber.Format | undefined;
+    readonly removeTrailing: boolean;
 
-    constructor(decimals: number | undefined,
-                rounding: BigNumber.RoundingMode | undefined,
-                format: BigNumber.Format | undefined) {
-        this.decimals = decimals | 0;
+    constructor(decimals: number | undefined = 0,
+                removeTailing: boolean = false,
+                rounding: BigNumber.RoundingMode | undefined = undefined,
+                format: BigNumber.Format | undefined = undefined) {
+        this.decimals = decimals;
+        this.removeTrailing = removeTailing;
         this.rounding = rounding;
         this.format = format;
     }
 
     apply(ctx: FormattingContext) {
-        ctx.buffer.push(
-            ctx.number.toFormat(this.decimals, this.rounding, this.format)
-        )
+        let number = ctx.number.toFormat(this.decimals, this.rounding, this.format);
+        if (this.removeTrailing) {
+            number = this.stripDecimalZero(number)
+        }
+        ctx.buffer.push(number)
+    }
+
+    stripDecimalZero(snum: string): string {
+        let decimalsStart = snum.indexOf(".");
+        if (decimalsStart <= 0) {
+            return snum
+        }
+        let end = snum.length;
+        let numberFound = false;
+        for (let i = snum.length - 1; !numberFound && i >= decimalsStart; i--) {
+            let c = snum[i];
+            if (c !== "0" && c !== ".") {
+                numberFound = true;
+            } else {
+                end = i;
+            }
+        }
+        return snum.substring(0, end)
     }
 }
 
@@ -209,7 +232,7 @@ const FullWithCode = new FormatterBuilder()
 
 const OptimalWithCode = new FormatterBuilder()
     .useOptimalUnit()
-    .number(2)
+    .number(2, true)
     .append(" ")
     .unitCode()
     .build();
