@@ -1,0 +1,45 @@
+name: Test Vault
+
+on:
+  # if pushed directly to the master
+  push:
+    branches:
+      - master
+      - release/*
+  # on a pull request
+  pull_request:
+    branches:
+      - master
+      - release/*
+
+jobs:
+
+  bigamount:
+    name: Test BigAmount
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: yarn install
+      - name: Build
+        run: yarn workspace @emeraldpay/bigamount run build
+      - name: Test
+        run: yarn workspace @emeraldpay/bigamount run test
+
+  bigamount-crypt:
+    name: Test BigAmount Crypto
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: yarn install
+      - name: Build (core)
+        run: yarn workspace @emeraldpay/bigamount run build
+      - name: Build (crypto)
+        run: yarn workspace @emeraldpay/bigamount-crypto run build
+      - name: Test
+        run: yarn workspace @emeraldpay/bigamount-crypto run test
