@@ -62,7 +62,7 @@ export class Wei extends WeiAny {
     }
 
     static decode(value: string): Wei {
-        return new Wei(value);
+        return BigAmount.decodeFor(value, WEIS, (n) => new Wei(n));
     }
 
     protected copyWith(value: BigNumber): this {
@@ -89,7 +89,7 @@ export class WeiEtc extends WeiAny {
     }
 
     static decode(value: string): WeiEtc {
-        return new WeiEtc(value);
+        return BigAmount.decodeFor(value, WEIS_ETC, (n) => new WeiEtc(n));
     }
 
     static fromEther(value: NumberAmount): WeiEtc {

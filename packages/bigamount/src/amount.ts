@@ -75,11 +75,22 @@ export class BigAmount {
     }
 
     encode(): string {
-        return this.number.toFixed();
+        return this.number.toFixed() + "/" + this.units.base.code.toUpperCase();
+    }
+
+    static decodeFor<T extends BigAmount>(value: string, units: Units, factory: CreateAmount<T>): T {
+        let parts = value.split("/");
+        if (parts.length != 2) {
+            throw new Error("Not encoded: " + value);
+        }
+        if (parts[1] != units.base.code.toUpperCase()) {
+            throw new Error("Wrong unit: " + units.base.code.toUpperCase() + " != " + parts[1])
+        }
+        return factory(parts[0])
     }
 
     static decode(value: string, units: Units): BigAmount {
-        return new BigAmount(value, units);
+        return BigAmount.decodeFor(value, units, (n) => new BigAmount(n, units));
     }
 
     equals(o: BigAmount): boolean {

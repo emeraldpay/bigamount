@@ -35,4 +35,8 @@ export class Satoshi extends BigAmount {
     toBitcoin(): number {
         return this.number.dividedBy(this.units.top.multiplier).toNumber()
     }
+
+    static decode(value: string): Satoshi {
+        return BigAmount.decodeFor(value, SATOSHIS, (n) => new Satoshi(n));
+    }
 }

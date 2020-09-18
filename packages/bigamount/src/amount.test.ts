@@ -157,47 +157,52 @@ describe("BigAmount", () => {
     describe("encode", () => {
         it("big value", () => {
             let value = new BigAmount("9362285714285714298238", units);
-            expect(value.encode()).toBe("9362285714285714298238");
+            expect(value.encode()).toBe("9362285714285714298238/S");
         });
         it("zero", () => {
             let value = new BigAmount(0, units);
-            expect(value.encode()).toBe("0");
+            expect(value.encode()).toBe("0/S");
         });
         it("negative", () => {
             let value = new BigAmount(-123456, units);
-            expect(value.encode()).toBe("-123456");
+            expect(value.encode()).toBe("-123456/S");
         });
     });
 
     describe("decode", () => {
         it("big value", () => {
-            let decoded = BigAmount.decode("9362285714285714298238", units);
+            let decoded = BigAmount.decode("9362285714285714298238/S", units);
             expect(decoded).toBeDefined();
             expect(decoded.number.toFixed()).toBe("9362285714285714298238");
         });
         it("zero", () => {
-            let decoded = BigAmount.decode("0", units);
+            let decoded = BigAmount.decode("0/S", units);
             expect(decoded).toBeDefined();
             expect(decoded.number.toFixed()).toBe("0");
         });
         it("negative", () => {
-            let decoded = BigAmount.decode("-321", units);
+            let decoded = BigAmount.decode("-321/S", units);
             expect(decoded).toBeDefined();
             expect(decoded.number.toFixed()).toBe("-321");
         });
         it("error to decode if non-number", () => {
             expect(() => {
-                BigAmount.decode("foo", units)
+                BigAmount.decode("foo/S", units)
             }).toThrow();
         });
         it("error to decode if characters after", () => {
             expect(() => {
-                BigAmount.decode("100 foo", units)
+                BigAmount.decode("100 foo/S", units)
             }).toThrow();
         });
         it("error to decode if characters before", () => {
             expect(() => {
-                BigAmount.decode("foo 100", units)
+                BigAmount.decode("foo 100/S", units)
+            }).toThrow();
+        });
+        it("error to decode wrong format", () => {
+            expect(() => {
+                BigAmount.decode("100", units)
             }).toThrow();
         });
     });
