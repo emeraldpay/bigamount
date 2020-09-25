@@ -29,7 +29,10 @@ export class Satoshi extends BigAmount {
     }
 
     static is(value: any): value is Satoshi {
-        return BigAmount.is(value) && SATOSHIS.equals(value.units);
+        return BigAmount.is(value)
+            && SATOSHIS.equals(value.units)
+            // @ts-ignore
+            && typeof value.toBitcoin === "function";
     }
 
     static fromBitcoin(value: NumberAmount): Satoshi {
@@ -42,5 +45,10 @@ export class Satoshi extends BigAmount {
 
     static decode(value: string): Satoshi {
         return BigAmount.decodeFor(value, SATOSHIS, (n) => new Satoshi(n));
+    }
+
+    protected copyWith(value: BigNumber): this {
+        // @ts-ignore
+        return new Satoshi(value)
     }
 }

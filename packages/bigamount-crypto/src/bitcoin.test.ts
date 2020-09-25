@@ -50,4 +50,14 @@ describe("Satoshi", () => {
         })
     });
 
+    describe("operations returns Satoishi", () => {
+        let act = Satoshi.ZERO.plus(Satoshi.ZERO);
+        expect(
+            act.isSame(Satoshi.ZERO)
+        ).toBeTruthy();
+        expect(
+            Satoshi.is(act)
+        ).toBeTruthy();
+    });
+
 })

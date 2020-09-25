@@ -106,7 +106,7 @@ export class WeiEtc extends WeiAny {
 
     protected copyWith(value: BigNumber): this {
         // @ts-ignore
-        return new Wei(value);
+        return new WeiEtc(value);
     }
 
 }

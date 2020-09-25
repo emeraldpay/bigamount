@@ -1,4 +1,4 @@
-import {Wei} from "./ethereum";
+import {Wei, WeiEtc} from "./ethereum";
 
 describe("Ethereum ETH", () => {
     describe("create", () => {
@@ -19,4 +19,28 @@ describe("Ethereum ETH", () => {
             })
         });
     });
+
+    describe("operations returns ETH", () => {
+        let act = Wei.ZERO.plus(Wei.ZERO);
+        expect(
+            act.isSame(Wei.ZERO)
+        ).toBeTruthy();
+        expect(
+            Wei.is(act)
+        ).toBeTruthy();
+    });
+});
+
+describe("Ethereum ETC", () => {
+
+    describe("operations returns ETC", () => {
+        let act = WeiEtc.ZERO.plus(WeiEtc.ZERO);
+        expect(
+            act.isSame(WeiEtc.ZERO)
+        ).toBeTruthy();
+        expect(
+            WeiEtc.is(act)
+        ).toBeTruthy();
+    });
+
 });
