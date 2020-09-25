@@ -1,4 +1,4 @@
-import {BigAmount, Unit, Units, NumberAmount} from "@emeraldpay/bigamount";
+import {BigAmount, Unit, Units, NumberAmount, CreateAmount} from "@emeraldpay/bigamount";
 import BigNumber from "bignumber.js";
 
 export const WEIS = new Units(
@@ -48,13 +48,17 @@ export class Wei extends WeiAny {
             if (BigAmount.is(value)) {
                 throw new Error("Already BigAmount");
             }
-            return BigAmount.createFor(value, WEIS, (value) => new Wei(value), unit)
+            return BigAmount.createFor(value, WEIS, Wei.factory(), unit)
         }
         super(value, WEIS);
     }
 
     static fromEther(value: NumberAmount): Wei {
         return new Wei(value, "ETHER");
+    }
+
+    static factory(): CreateAmount<Wei> {
+        return (value) => new Wei(value)
     }
 
     static is(value: any): value is Wei {
@@ -79,9 +83,13 @@ export class WeiEtc extends WeiAny {
             if (BigAmount.is(value)) {
                 throw new Error("Already BigAmount");
             }
-            return BigAmount.createFor(value, WEIS_ETC, (value) => new WeiEtc(value), unit)
+            return BigAmount.createFor(value, WEIS_ETC, WeiEtc.factory(), unit)
         }
         super(value, WEIS_ETC);
+    }
+
+    static factory(): CreateAmount<WeiEtc> {
+        return (value) => new WeiEtc(value)
     }
 
     static is(value: any): value is WeiEtc {

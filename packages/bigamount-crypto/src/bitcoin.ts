@@ -1,4 +1,4 @@
-import {BigAmount, Unit, Units, NumberAmount} from "@emeraldpay/bigamount";
+import {BigAmount, Unit, Units, NumberAmount, CreateAmount} from "@emeraldpay/bigamount";
 import BigNumber from "bignumber.js";
 
 export const SATOSHIS = new Units(
@@ -19,9 +19,13 @@ export class Satoshi extends BigAmount {
             if (BigAmount.is(value)) {
                 throw new Error("Already BigAmount");
             }
-            return BigAmount.createFor(value, SATOSHIS, (value) => new Satoshi(value), unit)
+            return BigAmount.createFor(value, SATOSHIS, Satoshi.factory(), unit)
         }
         super(value, SATOSHIS);
+    }
+
+    static factory(): CreateAmount<Satoshi> {
+        return (value) => new Satoshi(value)
     }
 
     static is(value: any): value is Satoshi {
