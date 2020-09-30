@@ -1,5 +1,5 @@
 export {
-    BigAmount, NumberAmount, CreateAmount
+    BigAmount, NumberAmount, CreateAmount, EncodedAmount, isEncodedAmount
 } from "./amount";
 
 export {

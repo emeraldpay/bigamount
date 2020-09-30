@@ -1,5 +1,5 @@
 import {Unit, Units} from "./units";
-import {BigAmount} from "./amount";
+import {BigAmount, isEncodedAmount} from "./amount";
 import BigNumber from "bignumber.js";
 
 let units = new Units(
@@ -107,6 +107,50 @@ describe("BigAmount", () => {
             ).toBeFalsy();
         });
     });
+
+    describe("isEncodedAmount", () => {
+        it("for encoded", () => {
+            expect(
+                isEncodedAmount("9362285714285714298238/S")
+            ).toBeTruthy();
+            expect(
+                isEncodedAmount("0/S")
+            ).toBeTruthy();
+            expect(
+                isEncodedAmount(" 0/S ")
+            ).toBeTruthy();
+            expect(
+                isEncodedAmount("-10/S")
+            ).toBeTruthy();
+        });
+        it("for invalid", () => {
+            expect(
+                isEncodedAmount("value 936/S")
+            ).toBeFalsy();
+            expect(
+                isEncodedAmount("936/S!")
+            ).toBeFalsy();
+            expect(
+                isEncodedAmount("936 S")
+            ).toBeFalsy();
+            expect(
+                isEncodedAmount("936S")
+            ).toBeFalsy();
+            expect(
+                isEncodedAmount("936")
+            ).toBeFalsy();
+            expect(
+                isEncodedAmount("")
+            ).toBeFalsy();
+            expect(
+                isEncodedAmount(undefined)
+            ).toBeFalsy();
+            expect(
+                isEncodedAmount(null)
+            ).toBeFalsy();
+        });
+
+    })
 
     describe("get number by unit", () => {
         it("base", () => {

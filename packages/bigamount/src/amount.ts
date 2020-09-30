@@ -4,6 +4,14 @@ import {Unit, Units} from "./units";
 export type NumberAmount = BigNumber | string | number;
 export type CreateAmount<T extends BigAmount> = (value: NumberAmount) => T;
 
+export type EncodedAmount = string;
+
+const ENCODED_FORMAT = /^-?\d+\/[A-Z0-9]+$/
+
+export function isEncodedAmount(value: any): value is EncodedAmount {
+    return typeof value === "string" && ENCODED_FORMAT.test(value.trim());
+}
+
 export class BigAmount {
     private readonly kind = "emerald.BigAmount";
 
@@ -74,22 +82,22 @@ export class BigAmount {
         return this.getNumberByUnit(unit).toFixed() + " " + unit.code;
     }
 
-    encode(): string {
+    encode(): EncodedAmount {
         return this.number.toFixed() + "/" + this.units.base.code.toUpperCase();
     }
 
-    static decodeFor<T extends BigAmount>(value: string, units: Units, factory: CreateAmount<T>): T {
-        let parts = value.split("/");
-        if (parts.length != 2) {
+    static decodeFor<T extends BigAmount>(value: string | EncodedAmount, units: Units, factory: CreateAmount<T>): T {
+        if (!isEncodedAmount(value)) {
             throw new Error("Not encoded: " + value);
         }
+        let parts = value.trim().split("/");
         if (parts[1] != units.base.code.toUpperCase()) {
             throw new Error("Wrong unit: " + units.base.code.toUpperCase() + " != " + parts[1])
         }
         return factory(parts[0])
     }
 
-    static decode(value: string, units: Units): BigAmount {
+    static decode(value: string | EncodedAmount, units: Units): BigAmount {
         return BigAmount.decodeFor(value, units, (n) => new BigAmount(n, units));
     }
 
