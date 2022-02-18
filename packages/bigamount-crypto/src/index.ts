@@ -1,8 +1,8 @@
 export {
-    SATOSHIS, Satoshi
+    SATOSHIS, Satoshi, BitcoinFormatter
 } from "./bitcoin";
 
 export {
-    WEIS, Wei,
-    WEIS_ETC, WeiEtc
+    WEIS, Wei, EthereumFormatter,
+    WEIS_ETC, WeiEtc, EthereumClassicFormatter,
 } from "./ethereum";

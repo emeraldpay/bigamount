@@ -1,5 +1,6 @@
-import {BigAmount, Unit, Units, NumberAmount, CreateAmount} from "@emeraldpay/bigamount";
+import {BigAmount, Unit, Units, NumberAmount, CreateAmount, FormatterBuilder, Predicates} from "@emeraldpay/bigamount";
 import BigNumber from "bignumber.js";
+import {SATOSHIS} from "./bitcoin";
 
 export const WEIS = new Units(
     [
@@ -110,3 +111,23 @@ export class WeiEtc extends WeiAny {
     }
 
 }
+
+export const EthereumFormatter = new FormatterBuilder()
+    .when(Predicates.ZERO, (a, b) => {
+        a.useTopUnit();
+        b.useOptimalUnit(undefined, [WEIS.units[0], WEIS.units[3], WEIS.units[5], WEIS.units[6]]);
+    })
+    .number(3, true)
+    .append(" ")
+    .unitCode()
+    .build();
+
+export const EthereumClassicFormatter = new FormatterBuilder()
+    .when(Predicates.ZERO, (a, b) => {
+        a.useTopUnit();
+        b.useOptimalUnit(undefined, [WEIS_ETC.units[0], WEIS_ETC.units[3], WEIS_ETC.units[5], WEIS_ETC.units[6]]);
+    })
+    .number(3, true)
+    .append(" ")
+    .unitCode()
+    .build();

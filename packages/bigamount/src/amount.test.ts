@@ -180,7 +180,7 @@ describe("BigAmount", () => {
     });
 
     describe("get optimal unit", () => {
-        //since it's shortcut, just basic check
+        // since it's a shortcut do just a basic check
         it("works", () => {
             let value = new BigAmount("123456", units);
             expect(value.getOptimalUnit().code).toBe("kS");

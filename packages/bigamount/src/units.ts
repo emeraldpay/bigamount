@@ -82,7 +82,7 @@ export class Units {
         return true;
     }
 
-    getUnit(value: BigAmount | BigNumber | number, limit?: Unit): Unit {
+    getUnit(value: BigAmount | BigNumber | number, limit?: Unit, useUnits: Unit[] = this.units): Unit {
         let number;
         if (typeof value == "number") {
             number = new BigNumber(value);
@@ -95,8 +95,8 @@ export class Units {
         }
         number = number.absoluteValue();
         limit = limit || this.base;
-        for (let i = this.units.length - 1; i > 0; i--) {
-            let unit = this.units[i];
+        for (let i = useUnits.length - 1; i > 0; i--) {
+            let unit = useUnits[i];
             if (limit.decimals == unit.decimals) {
                 return unit;
             }

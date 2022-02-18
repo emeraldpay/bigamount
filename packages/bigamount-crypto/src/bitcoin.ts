@@ -1,4 +1,4 @@
-import {BigAmount, Unit, Units, NumberAmount, CreateAmount} from "@emeraldpay/bigamount";
+import {BigAmount, Unit, Units, NumberAmount, CreateAmount, FormatterBuilder, Predicates} from "@emeraldpay/bigamount";
 import BigNumber from "bignumber.js";
 
 export const SATOSHIS = new Units(
@@ -52,3 +52,13 @@ export class Satoshi extends BigAmount {
         return new Satoshi(value)
     }
 }
+
+export const BitcoinFormatter = new FormatterBuilder()
+    .when(Predicates.ZERO, (a, b) => {
+        a.useTopUnit();
+        b.useOptimalUnit(undefined, [SATOSHIS.units[0], SATOSHIS.units[3], SATOSHIS.units[4]]);
+    })
+    .number(3, true)
+    .append(" ")
+    .unitCode()
+    .build();

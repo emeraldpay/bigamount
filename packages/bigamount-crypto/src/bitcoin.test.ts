@@ -1,4 +1,4 @@
-import {Satoshi} from "./bitcoin";
+import {BitcoinFormatter, Satoshi, SATOSHIS} from "./bitcoin";
 import {BigAmount, Formatter, FormatterBuilder, Predicates} from "@emeraldpay/bigamount";
 
 describe("Satoshi", () => {
@@ -30,15 +30,7 @@ describe("Satoshi", () => {
     });
 
     describe("Format bitcoins", () => {
-        let fmt = new FormatterBuilder()
-            .when(Predicates.ZERO, (a, b) => {
-                a.useTopUnit();
-                b.useOptimalUnit();
-            })
-            .number(2, true)
-            .append(" ")
-            .unitCode()
-            .build();
+        let fmt = BitcoinFormatter;
 
         it("zero", () => {
             let value = Satoshi.ZERO;
@@ -52,12 +44,17 @@ describe("Satoshi", () => {
 
         it("decimal", () => {
             let value = new Satoshi("123400000");
-            expect(fmt.format(value)).toBe("1.23 BTC");
+            expect(fmt.format(value)).toBe("1.234 BTC");
+        });
+
+        it("less that bitcoin amount", () => {
+            let value = new Satoshi("123456");
+            expect(fmt.format(value)).toBe("1.235 mBTC");
         });
 
         it("small amount", () => {
             let value = new Satoshi("123");
-            expect(fmt.format(value)).toBe("1.23 μBTC");
+            expect(fmt.format(value)).toBe("123 sat");
         });
 
         it("sat amount", () => {

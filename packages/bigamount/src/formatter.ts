@@ -62,9 +62,9 @@ export class FormatterBuilder {
         return this;
     }
 
-    useOptimalUnit(limit?: Unit): FormatterBuilder {
+    useOptimalUnit(limit?: Unit, useUnits?: Unit[]): FormatterBuilder {
         this.formatter.push(
-            new OptimalUnit(limit)
+            new OptimalUnit(limit, useUnits)
         )
         return this;
     }
@@ -219,13 +219,15 @@ export class TopUnit implements FormatterPart {
 
 export class OptimalUnit implements FormatterPart {
     readonly limit: Unit | undefined;
+    readonly useUnits: Unit[] | undefined;
 
-    constructor(limit: Unit | undefined) {
+    constructor(limit: Unit | undefined, useUnits: Unit[] | undefined) {
         this.limit = limit;
+        this.useUnits = useUnits;
     }
 
     apply(ctx: FormattingContext) {
-        ctx.unit = ctx.source.getOptimalUnit(this.limit);
+        ctx.unit = ctx.source.getOptimalUnit(this.limit, this.useUnits);
         ctx.number = ctx.source.getNumberByUnit(ctx.unit);
     }
 }
