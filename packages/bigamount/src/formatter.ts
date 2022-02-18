@@ -43,6 +43,11 @@ export class FormatterBuilder {
         return this;
     }
 
+    abs(): FormatterBuilder {
+        this.formatter.push(new AbsFormatter());
+        return this;
+    }
+
     append(s: string): FormatterBuilder {
         this.formatter.push(
             new AppendFormatter(s)
@@ -92,6 +97,13 @@ export class FormatterBuilder {
         return this;
     }
 
+    when(predicate: (value: BigAmount) => boolean, selector: (whenTrue: FormatterBuilder, whenFalse: FormatterBuilder) => void): FormatterBuilder {
+        let choice = new Choice(predicate);
+        choice.init(selector);
+        this.formatter.push(choice);
+        return this;
+    }
+
     build(): BigAmountFormatter {
         return new BigAmountFormatter(this.formatter);
     }
@@ -138,6 +150,14 @@ export class NumberFormatter implements FormatterPart {
         }
         return snum.substring(0, end)
     }
+}
+
+export class AbsFormatter implements FormatterPart {
+
+    apply(ctx: FormattingContext) {
+        ctx.number = ctx.number.abs();
+    }
+
 }
 
 export class AppendFormatter implements FormatterPart {
@@ -210,6 +230,36 @@ export class OptimalUnit implements FormatterPart {
     }
 }
 
+export class Choice implements FormatterPart {
+
+    private readonly predicate: (value: BigAmount) => boolean;
+    private onTrue: FormatterPart[] = [];
+    private onFalse: FormatterPart[] = [];
+
+    constructor(predicate: (value: BigAmount) => boolean) {
+        this.predicate = predicate;
+    }
+
+    init(selector: (whenTrue: FormatterBuilder, whenFalse: FormatterBuilder) => void) {
+        let whenTrue: FormatterBuilder = new FormatterBuilder();
+        let whenFalse: FormatterBuilder = new FormatterBuilder();
+        selector(whenTrue, whenFalse);
+        this.onTrue = whenTrue.build().formatters;
+        this.onFalse = whenFalse.build().formatters;
+    }
+
+    apply(ctx: FormattingContext) {
+        let result = this.predicate(ctx.source);
+        let formatters: FormatterPart[];
+        if (result) {
+            formatters = this.onTrue;
+        } else {
+            formatters = this.onFalse;
+        }
+        formatters.forEach((f) => f.apply(ctx));
+    }
+}
+
 export const DefaultFormatterParts = {
     OptimalUnit, BaseUnit, TopUnit, UseUnit, UnitCodeFormatter, UnitNameFormatter, NumberFormatter, AppendFormatter
 }
@@ -239,4 +289,10 @@ const OptimalWithCode = new FormatterBuilder()
 
 export const Formatter = {
     Amount, Full, FullWithCode, OptimalWithCode
+}
+
+export const Predicates = {
+    ZERO: (value: BigAmount) => value.isZero(),
+    NEGATIVE: (value: BigAmount) => value.isNegative(),
+    POSITIVE: (value: BigAmount) => value.isPositive(),
 }

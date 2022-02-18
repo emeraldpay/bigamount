@@ -1,4 +1,4 @@
-import {Formatter, FormatterBuilder, NumberFormatter} from './formatter';
+import {Formatter, FormatterBuilder, NumberFormatter, Predicates} from './formatter';
 import {BigAmount} from "./amount";
 import {Unit, Units} from "./units";
 
@@ -57,6 +57,54 @@ describe("Formatter", () => {
         it("large", () => {
             let value = new BigAmount("1234567890123456", units);
             expect(fmt.format(value)).toBe("1,234,567,890.12 MS");
+        });
+    });
+
+    describe("dynamic on value", () => {
+
+        it("specific unit on zero", () => {
+            let fmt = new FormatterBuilder()
+                .when(Predicates.ZERO, (a, b) => {
+                    a.useUnit(units.units[1]);
+                    b.useOptimalUnit();
+                })
+                .number(2, true)
+                .append(" ")
+                .unitCode()
+                .build();
+            let value = new BigAmount(0, units);
+            expect(fmt.format(value)).toBe("0 kS");
+        });
+
+        it("top unit on zero", () => {
+            let fmt = new FormatterBuilder()
+                .when(Predicates.ZERO, (a, b) => {
+                    a.useTopUnit();
+                    b.useOptimalUnit();
+                })
+                .number(2, true)
+                .append(" ")
+                .unitCode()
+                .build();
+            let value = new BigAmount(0, units);
+            expect(fmt.format(value)).toBe("0 MS");
+        });
+
+        it("financial format for negative", () => {
+            let fmt = new FormatterBuilder()
+                .when(Predicates.NEGATIVE, (a, b) => {
+                    a.append("(").abs();
+                })
+                .number(2, true)
+                .when(Predicates.NEGATIVE, (a, b) => {
+                    a.append(")");
+                })
+                .append(" ")
+                .useOptimalUnit()
+                .unitCode()
+                .build();
+            let value = new BigAmount(-1234000, units);
+            expect(fmt.format(value)).toBe("(1,234,000) MS");
         });
     });
 

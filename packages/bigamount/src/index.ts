@@ -12,5 +12,6 @@ export {
     BigAmountFormatter,
     FormatterBuilder,
     DefaultFormatterParts,
-    Formatter
+    Formatter,
+    Predicates,
 } from "./formatter";
