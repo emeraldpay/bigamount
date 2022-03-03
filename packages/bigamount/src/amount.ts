@@ -73,8 +73,8 @@ export class BigAmount {
         return this.number.dividedBy(unit.multiplier);
     }
 
-    getOptimalUnit(limit?: Unit, useUnits?: Unit[]): Unit {
-        return this.units.getUnit(this, limit, useUnits);
+    getOptimalUnit(limit?: Unit, useUnits?: Unit[], decimals?: number): Unit {
+        return this.units.getUnit(this, limit, useUnits, decimals);
     }
 
     toString(): string {

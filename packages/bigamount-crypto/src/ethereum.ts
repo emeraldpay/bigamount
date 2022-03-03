@@ -115,7 +115,7 @@ export class WeiEtc extends WeiAny {
 export const EthereumFormatter = new FormatterBuilder()
     .when(Predicates.ZERO, (a, b) => {
         a.useTopUnit();
-        b.useOptimalUnit(undefined, [WEIS.units[0], WEIS.units[3], WEIS.units[5], WEIS.units[6]]);
+        b.useOptimalUnit(undefined, [WEIS.units[0], WEIS.units[3], WEIS.units[5], WEIS.units[6]], 3);
     })
     .number(3, true)
     .append(" ")
@@ -125,7 +125,7 @@ export const EthereumFormatter = new FormatterBuilder()
 export const EthereumClassicFormatter = new FormatterBuilder()
     .when(Predicates.ZERO, (a, b) => {
         a.useTopUnit();
-        b.useOptimalUnit(undefined, [WEIS_ETC.units[0], WEIS_ETC.units[3], WEIS_ETC.units[5], WEIS_ETC.units[6]]);
+        b.useOptimalUnit(undefined, [WEIS_ETC.units[0], WEIS_ETC.units[3], WEIS_ETC.units[5], WEIS_ETC.units[6]], 3);
     })
     .number(3, true)
     .append(" ")

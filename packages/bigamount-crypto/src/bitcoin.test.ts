@@ -49,12 +49,15 @@ describe("Satoshi", () => {
 
         it("less that bitcoin amount", () => {
             let value = new Satoshi("123456");
-            expect(fmt.format(value)).toBe("1.235 mBTC");
+            expect(fmt.format(value)).toBe("0.001 BTC");
         });
 
-        it("small amount", () => {
-            let value = new Satoshi("123");
-            expect(fmt.format(value)).toBe("123 sat");
+        it("micro bitcoin amount", () => {
+            let value = new Satoshi("12345");
+            expect(fmt.format(value)).toBe("0.123 mBTC");
+
+            value = new Satoshi("123");
+            expect(fmt.format(value)).toBe("0.001 mBTC");
         });
 
         it("sat amount", () => {

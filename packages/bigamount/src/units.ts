@@ -82,8 +82,20 @@ export class Units {
         return true;
     }
 
-    getUnit(value: BigAmount | BigNumber | number, limit?: Unit, useUnits: Unit[] = this.units): Unit {
-        let number;
+    /**
+     * Search for an optimal Unit for the number considering the provided criteria. Optimal is a unit which is closest
+     * to the number to display with least numbers.
+     *
+     * Ex. for a number 500,000 and unit 0, 1000, and 1,000,000 the second one is optimal because it gives just 500.
+     *
+     * @param value number to find unit
+     * @param limit smallest unit to accept
+     * @param useUnits list of possible units to check
+     * @param decimals max number of decimals to accept for a unit. i.e. 2 means accept two decimals (like 0.25) for a unit
+     */
+    getUnit(value: BigAmount | BigNumber | number, limit?: Unit, useUnits: Unit[] = this.units, decimals?: number): Unit {
+        useUnits = useUnits || this.units;
+        let number: BigNumber;
         if (typeof value == "number") {
             number = new BigNumber(value);
         } else if (BigAmount.is(value)) {
@@ -94,13 +106,26 @@ export class Units {
             throw new Error("Invalid value type" + value)
         }
         number = number.absoluteValue();
+        let numberWithDecimals = null;
+        if (typeof decimals != "undefined") {
+            numberWithDecimals = number.multipliedBy(new BigNumber(10).pow(decimals));
+        }
         limit = limit || this.base;
+        // goes from the largest unit to the smallest, checking first which fits the criteria
         for (let i = useUnits.length - 1; i > 0; i--) {
             let unit = useUnits[i];
+            // when reached the limit return it, that's the final unit
             if (limit.decimals == unit.decimals) {
                 return unit;
             }
+            // when reach a unit which is smaller that our number,
+            // ex. unit with multiplier 1000 and the number 1234.
             if (number.isGreaterThanOrEqualTo(unit.multiplier)) {
+                return unit;
+            }
+            // alternatively check with same logic but considering the decimals,
+            // i.e. if we accept 2 decimals then number 123 should still fit unit with multiplier 1000
+            if (numberWithDecimals != null && numberWithDecimals.isGreaterThanOrEqualTo(unit.multiplier)) {
                 return unit;
             }
         }

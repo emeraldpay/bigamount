@@ -56,7 +56,7 @@ export class Satoshi extends BigAmount {
 export const BitcoinFormatter = new FormatterBuilder()
     .when(Predicates.ZERO, (a, b) => {
         a.useTopUnit();
-        b.useOptimalUnit(undefined, [SATOSHIS.units[0], SATOSHIS.units[3], SATOSHIS.units[4]]);
+        b.useOptimalUnit(undefined, [SATOSHIS.units[0], SATOSHIS.units[3], SATOSHIS.units[4]], 3);
     })
     .number(3, true)
     .append(" ")

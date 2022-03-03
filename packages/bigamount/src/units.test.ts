@@ -52,6 +52,12 @@ describe("Units", () => {
         });
 
         it("with limit", () => {
+            expect(units.getUnit(1, undefined, undefined, 3).code).toBe("kS")
+            expect(units.getUnit(50, undefined, undefined, 3).code).toBe("kS")
+            expect(units.getUnit(100, undefined, undefined, 3).code).toBe("kS")
+        });
+
+        it("with decimals", () => {
             expect(units.getUnit(1, units.units[1]).code).toBe("kS")
             expect(units.getUnit(100, units.units[1]).code).toBe("kS")
             expect(units.getUnit(1050, units.units[1]).code).toBe("kS")

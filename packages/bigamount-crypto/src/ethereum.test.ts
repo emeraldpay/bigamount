@@ -1,4 +1,5 @@
-import {Wei, WeiEtc} from "./ethereum";
+import {EthereumFormatter, Wei, WeiEtc} from "./ethereum";
+import {BitcoinFormatter, Satoshi} from "./bitcoin";
 
 describe("Ethereum ETH", () => {
     describe("create", () => {
@@ -41,6 +42,48 @@ describe("Ethereum ETC", () => {
         expect(
             WeiEtc.is(act)
         ).toBeTruthy();
+    });
+
+});
+
+describe("Format ETH", () => {
+    let fmt = EthereumFormatter;
+
+    it("zero", () => {
+        let value = Wei.ZERO;
+        expect(fmt.format(value)).toBe("0 ETH");
+    });
+
+    it("one", () => {
+        let value = new Wei("1000000000000000000");
+        expect(fmt.format(value)).toBe("1 ETH");
+    });
+
+    it("decimal", () => {
+        let value = new Wei("1234000000000000000");
+        expect(fmt.format(value)).toBe("1.234 ETH");
+    });
+
+    it("less that ether amount", () => {
+        let value = new Wei("234000000000000000");
+        expect(fmt.format(value)).toBe("0.234 ETH");
+
+        value = new Wei("899123456789123456");
+        expect(fmt.format(value)).toBe("0.899 ETH");
+
+        value = new Wei("89123456789123456");
+        expect(fmt.format(value)).toBe("0.089 ETH");
+
+        value = new Wei("8123456789123456");
+        expect(fmt.format(value)).toBe("0.008 ETH");
+    });
+
+    it("small amount", () => {
+        let value = new Wei("123");
+        expect(fmt.format(value)).toBe("123 Wei");
+
+        value = new Wei("2");
+        expect(fmt.format(value)).toBe("2 Wei");
     });
 
 });
