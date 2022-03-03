@@ -1,6 +1,6 @@
 {
   "name": "@emeraldpay/bigamount-crypto",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "BigAmount for Cryptocurrencies",
   "author": "Igor Artamonov",
   "license": "Apache-2.0",
@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "dependencies": {
-    "@emeraldpay/bigamount": "0.3.0",
+    "@emeraldpay/bigamount": "0.4.0",
     "bignumber.js": "^8.0.2"
   },
   "devDependencies": {
