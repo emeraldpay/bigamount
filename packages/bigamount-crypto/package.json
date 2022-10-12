@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "dependencies": {
-    "@emeraldpay/bigamount": "0.4.0",
+    "@emeraldpay/bigamount": "0.4.1",
     "bignumber.js": "^8.0.2"
   },
   "devDependencies": {
