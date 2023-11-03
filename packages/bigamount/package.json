@@ -1,6 +1,6 @@
 {
   "name": "@emeraldpay/bigamount",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Big Amounts with units and conversions",
   "author": "Igor Artamonov",
   "license": "Apache-2.0",
