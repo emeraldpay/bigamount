@@ -1,6 +1,5 @@
 import {BigAmount, Unit, Units, NumberAmount, CreateAmount, FormatterBuilder, Predicates} from "@emeraldpay/bigamount";
 import BigNumber from "bignumber.js";
-import {SATOSHIS} from "./bitcoin";
 
 export const WEIS = new Units(
     [
@@ -31,6 +30,10 @@ export class WeiAny extends BigAmount {
         super(value, units);
     }
 
+    static is(value: any): value is WeiAny {
+        return BigAmount.is(value) && typeof value['toEther'] === 'function';
+    }
+
     toHex(): string {
         return `${this.isNegative() ? '-' : ''}0x${this.number.abs().toString(16)}`;
     }
@@ -38,10 +41,13 @@ export class WeiAny extends BigAmount {
     toEther(): number {
         return this.number.dividedBy(this.units.top.multiplier).toNumber()
     }
+
+    protected copyWith(value: BigNumber): this {
+        return new WeiAny(value, this.units) as this;
+    }
 }
 
 export class Wei extends WeiAny {
-
     public static ZERO: Wei = new Wei(0);
 
     constructor(value: NumberAmount | BigAmount, unit?: string | Unit) {
@@ -63,7 +69,7 @@ export class Wei extends WeiAny {
     }
 
     static is(value: any): value is Wei {
-        return BigAmount.is(value) && WEIS.equals(value.units);
+        return BigAmount.is(value) && WEIS.equals(value.units) && typeof value['toEther'] === 'function';
     }
 
     static decode(value: string): Wei {
@@ -71,8 +77,7 @@ export class Wei extends WeiAny {
     }
 
     protected copyWith(value: BigNumber): this {
-        // @ts-ignore
-        return new Wei(value);
+        return new Wei(value) as this;
     }
 }
 
@@ -94,7 +99,7 @@ export class WeiEtc extends WeiAny {
     }
 
     static is(value: any): value is WeiEtc {
-        return BigAmount.is(value) && WEIS_ETC.equals(value.units);
+        return BigAmount.is(value) && WEIS_ETC.equals(value.units) && typeof value['toEther'] === 'function';
     }
 
     static decode(value: string): WeiEtc {
@@ -106,8 +111,7 @@ export class WeiEtc extends WeiAny {
     }
 
     protected copyWith(value: BigNumber): this {
-        // @ts-ignore
-        return new WeiEtc(value);
+        return new WeiEtc(value) as this;
     }
 
 }

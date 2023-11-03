@@ -11,7 +11,25 @@ export const SATOSHIS = new Units(
     ]
 );
 
-export class Satoshi extends BigAmount {
+export class SatoshiAny extends BigAmount {
+    constructor(value: NumberAmount | BigAmount, units: Units) {
+        super(value, units);
+    }
+
+    static is(value: unknown): value is SatoshiAny {
+        return BigAmount.is(value) && typeof value['toBitcoin'] === "function";
+    }
+
+    toBitcoin(): number {
+        return this.number.dividedBy(this.units.top.multiplier).toNumber()
+    }
+
+    protected copyWith(value: BigNumber): this {
+        return new SatoshiAny(value, this.units) as this;
+    }
+}
+
+export class Satoshi extends SatoshiAny {
     static ZERO: Satoshi = new Satoshi(0);
 
     constructor(value: NumberAmount | BigAmount, unit?: string | Unit) {
@@ -29,18 +47,11 @@ export class Satoshi extends BigAmount {
     }
 
     static is(value: any): value is Satoshi {
-        return BigAmount.is(value)
-            && SATOSHIS.equals(value.units)
-            // @ts-ignore
-            && typeof value.toBitcoin === "function";
+        return BigAmount.is(value) && SATOSHIS.equals(value.units) && typeof value['toBitcoin'] === "function";
     }
 
     static fromBitcoin(value: NumberAmount): Satoshi {
         return new Satoshi(value, "BITCOIN")
-    }
-
-    toBitcoin(): number {
-        return this.number.dividedBy(this.units.top.multiplier).toNumber()
     }
 
     static decode(value: string): Satoshi {
@@ -48,8 +59,7 @@ export class Satoshi extends BigAmount {
     }
 
     protected copyWith(value: BigNumber): this {
-        // @ts-ignore
-        return new Satoshi(value)
+        return new Satoshi(value) as this;
     }
 }
 
