@@ -46,7 +46,7 @@ export class BigAmount {
                 throw new Error("Invalid unit: " + unit);
             }
             return BigAmount.createFor(value, units, factory, actualUnit);
-        } else if (typeof Unit.is(unit)) {
+        } else if (Unit.is(unit)) {
             if (!units.contains(unit)) {
                 throw new Error("Invalid unit: " + unit.toString());
             }
@@ -120,11 +120,7 @@ export class BigAmount {
     }
 
     protected copyWith(value: BigNumber): this {
-        // @ts-ignore
-        return new BigAmount(
-            value,
-            this.units
-        )
+        return new BigAmount(value, this.units) as this;
     }
 
     plus(o: this): this {

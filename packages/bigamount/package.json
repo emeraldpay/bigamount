@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "dependencies": {
-    "bignumber.js": "^8.0.2"
+    "bignumber.js": "8.0.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.13",

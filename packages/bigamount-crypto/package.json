@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@emeraldpay/bigamount": "0.4.2",
-    "bignumber.js": "^8.0.2"
+    "bignumber.js": "8.0.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.13",
